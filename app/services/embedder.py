@@ -9,7 +9,8 @@ class Embedder():
         self.embedding_model = SentenceTransformer(EMBEDDING_MODEL)
 
     def embed(self, chunks: List[str]):
-        embeddings: list[tuple[str, list[float]]] = []
-        for chunk in chunks:
-            embeddings.append((chunk, self.embedding_model.encode(chunk, normalize_embeddings=True).tolist()))
-        return embeddings
+        embedding_chunks: list[tuple[str, list[float]]] = []
+        embeddings = self.embedding_model.encode(chunks, normalize_embeddings=True)
+        for index, chunk in enumerate(chunks):
+            embedding_chunks.append((chunk, embeddings[index]))
+        return embedding_chunks
