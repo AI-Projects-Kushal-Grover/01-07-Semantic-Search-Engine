@@ -11,12 +11,12 @@ load_dotenv(env_file)
 from app.infrastructure.database import Database
 from app.api.documents import router as document_router
 from app.api.query import router as query_router
-from app.repositories.vector_store import VectorStoreRepository
+from app.repositories.document_chunk import DocumentChunkRepository
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    vector_store_repo = VectorStoreRepository()
-    await vector_store_repo.create_table_if_not_exists()
+    document_chunk_repo = DocumentChunkRepository()
+    await document_chunk_repo.create_table_if_not_exists()
     yield
 
 app = FastAPI(

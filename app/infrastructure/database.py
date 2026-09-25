@@ -17,7 +17,7 @@ class Database:
             conn = await psycopg.AsyncConnection.connect(connection_string)
             try:
                 conn.autocommit = True
-            except Exception:
+            except Exception as ee:
                 logger.debug("Could not set autocommit on connection, continuing")
             await register_vector_async(conn)
             self.connection = conn
@@ -33,6 +33,7 @@ class Database:
         try:
             logger.debug("Executing query: %s; params: %s", query, params)
             result = await self.connection.execute(query, params)
+            await result.connection.commit()
             logger.debug("Query executed")
             return result
         except Exception as e:
