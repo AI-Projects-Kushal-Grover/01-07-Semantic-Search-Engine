@@ -23,7 +23,7 @@ class DocumentChunkRepository():
             CREATE TABLE IF NOT EXISTS {} (
                 id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
                 title varchar(200),
-                content varchar(2000),
+                content text,
                 embedding vector(384)
             )
         """)
@@ -40,14 +40,14 @@ class DocumentChunkRepository():
         query = self._compose_query("INSERT INTO {} (title, content, embedding) values (%s, %s, %s)")
         await database.execute(
             query,
-            (self.table_name, vector_store.title, vector_store.content, vector_store.embedding)
+            (vector_store.title, vector_store.content, vector_store.embedding)
         )
 
     async def select(self, embedding: List[float], limit = 5) -> List[DocumentChunk]:
         query = self._compose_query("SELECT * FROM {} ORDER BY embedding <-> %s LIMIT %s")
         results = await database.execute(
             query,
-            (self.table_name, embedding, limit)
+            (embedding, limit)
         )
         results.row_factory = async_factory
         return cast(list[DocumentChunk], await results.fetchall())
