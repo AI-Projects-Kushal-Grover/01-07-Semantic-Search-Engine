@@ -1,6 +1,6 @@
 import os
 import logging
-from typing import List, cast
+from typing import List, cast, LiteralString
 
 from psycopg import sql
 
@@ -41,8 +41,11 @@ class DocumentChunkRepository():
             (vector_store.title, vector_store.content, vector_store.embedding)
         )
 
-    async def select(self, embedding: List[float], limit = 5):
-        query = self._compose_query("SELECT title, content, (embedding <-> %s::vector) as distance FROM {} ORDER BY distance LIMIT %s")
+    async def select(self, embedding: List[float], operator: str, limit = 5):
+        query = sql.SQL("SELECT title, content, (embedding {op} %s::vector) as distance FROM {table} ORDER BY distance LIMIT %s").format(
+            table=sql.Identifier(self.table_name),
+            op=sql.SQL(cast(LiteralString, operator))
+        )
         results = await database.execute(
             query,
             (embedding, limit)

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 
 from pydantic import Field, BaseModel
 
@@ -10,6 +10,7 @@ class Document(BaseModel):
 
 class QueryRequest(BaseModel):
     search: str = Field()
+    operator: Literal["<->", "<=>", "<#>"]
 
 class DocumentResult(BaseModel):
     title: str = Field()
