@@ -14,6 +14,7 @@ class QueryRequest(BaseModel):
 class DocumentResult(BaseModel):
     title: str = Field()
     content: str = Field()
+    distance: float = Field()
 
 class QueryResult(BaseModel):
     documents: List[DocumentResult]

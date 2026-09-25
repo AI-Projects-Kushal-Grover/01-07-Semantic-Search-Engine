@@ -4,7 +4,7 @@ from app.repositories.document_chunk import DocumentChunkRepository
 from app.services.chunker import Chunker
 from app.services.embedder import Embedder
 
-class SementicSearch():
+class SemanticSearch():
     def __init__(self) -> None:
         self.document_chunk_repository = DocumentChunkRepository()
         self.embedder = Embedder()
@@ -22,5 +22,5 @@ class SementicSearch():
     async def search(self, query: str) -> QueryResult:
         query_embedding = self.embedder.embed([query])
         document_chunks = await self.document_chunk_repository.select(query_embedding[0])
-        documents = [DocumentResult(title=document[1], content=document[2]) for document in document_chunks]
+        documents = [DocumentResult(title=document[0], content=document[1], distance=document[2]) for document in document_chunks]
         return QueryResult(documents=documents)

@@ -42,7 +42,7 @@ class DocumentChunkRepository():
         )
 
     async def select(self, embedding: List[float], limit = 5):
-        query = self._compose_query("SELECT * FROM {} ORDER BY embedding <-> %s::vector LIMIT %s")
+        query = self._compose_query("SELECT title, content, (embedding <-> %s::vector) as distance FROM {} ORDER BY distance LIMIT %s")
         results = await database.execute(
             query,
             (embedding, limit)
