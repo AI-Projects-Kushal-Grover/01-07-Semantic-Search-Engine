@@ -1,5 +1,5 @@
 from app.domain.entities import DocumentChunk
-from app.domain.models import Document, QueryResult
+from app.domain.models import Document, DocumentResult, QueryResult
 from app.repositories.document_chunk import DocumentChunkRepository
 from app.services.chunker import Chunker
 from app.services.embedder import Embedder
@@ -20,5 +20,7 @@ class SementicSearch():
             ))
 
     async def search(self, query: str) -> QueryResult:
-        query_result = QueryResult(documents=[])
-        return query_result
+        query_embedding = self.embedder.embed([query])
+        document_chunks = await self.document_chunk_repository.select(query_embedding[0])
+        documents = [DocumentResult(title=document[1], content=document[2]) for document in document_chunks]
+        return QueryResult(documents=documents)

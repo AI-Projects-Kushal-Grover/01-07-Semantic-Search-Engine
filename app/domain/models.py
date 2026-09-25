@@ -11,5 +11,9 @@ class Document(BaseModel):
 class QueryRequest(BaseModel):
     search: str = Field()
 
+class DocumentResult(BaseModel):
+    title: str = Field()
+    content: str = Field()
+
 class QueryResult(BaseModel):
-    documents: List[Document]
+    documents: List[DocumentResult]
