@@ -10,13 +10,13 @@ class SementicSearch():
         self.embedder = Embedder()
 
     async def index_document(self, document: Document):
-        chunks = Chunker.chunk_fixed_size(document.content, 400, 50)
+        chunks = Chunker.chunk_fixed_size(document.content, document.chunk_size, document.chunk_overlap)
         embeddings = self.embedder.embed(chunks)
-        for embedding in embeddings:
+        for index, embedding in enumerate(embeddings):
             await self.document_chunk_repository.insert(DocumentChunk(
                 title=document.title,
-                content=embedding[0],
-                embedding=embedding[1]
+                content=chunks[index],
+                embedding=embedding
             ))
 
     async def search(self, query: str) -> QueryResult:

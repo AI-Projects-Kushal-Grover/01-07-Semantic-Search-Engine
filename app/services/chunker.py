@@ -1,6 +1,5 @@
 from typing import List
 
-
 class Chunker():
     @staticmethod
     def chunk_fixed_size(text: str, size = 200, overlap = 50):
